@@ -5,11 +5,11 @@
  */
 package forge.bill.mode;
 
-import forge.bill.data.SIOInfo;
 import forge.bill.devdrv.Device;
 import forge.bill.devdrv.IDevDriver;
 import forge.bill.devdrv.IDevDriverSearch;
 import java.util.concurrent.locks.ReentrantLock;
+import nahon.comm.io.IOInfo;
 
 /**
  *
@@ -27,7 +27,7 @@ public class DevManager {
 
     // <editor-fold defaultstate="collapsed" desc="搜索设备"> 
     //搜索设备
-    public void SearchDevice(SIOInfo ioinfo, byte dst_addr) throws Exception {
+    public void SearchDevice(IOInfo ioinfo, byte dst_addr) throws Exception {
         managerlock.lock();
         try {
             //删除当前设备

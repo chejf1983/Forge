@@ -5,7 +5,6 @@
  */
 package forge.bill.platform;
 
-import forge.bill.data.SIOInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import nahon.comm.faultsystem.LogCenter;
+import nahon.comm.io.IOInfo;
 
 /**
  *
@@ -105,7 +105,7 @@ public class SystemConfig {
 
     // <editor-fold defaultstate="collapsed" desc="配置变量">
     //从配置文件中读取默认io信息
-    public SIOInfo GetDefaultIO() {
+    public IOInfo GetDefaultIO() {
         //如果没有IO类型，表示没有保存任何信息，返回空
         String iotype = this.instance.getProperty("netType", "");
         if (iotype.equals("")) {
@@ -129,7 +129,7 @@ public class SystemConfig {
     }
 
     //保存默认io信息到配置文件
-    public void SaveDefaultIO(SIOInfo par) {
+    public void SaveDefaultIO(IOInfo par) {
         if (par == null) {
             //保存IO类型
             instance.setProperty("netType", "");
@@ -139,8 +139,8 @@ public class SystemConfig {
         //保存IO类型
         instance.setProperty("netType", par.iotype.toString());
         //保存IO参数
-        for (int i = 0; i < par.pars.length; i++) {
-            instance.setProperty("par" + i, par.pars[i].toString());
+        for (int i = 0; i < par.par.length; i++) {
+            instance.setProperty("par" + i, par.par[i].toString());
         }
     }
 

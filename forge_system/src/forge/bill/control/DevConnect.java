@@ -5,13 +5,12 @@
  */
 package forge.bill.control;
 
-import forge.bill.data.SIOInfo;
-import forge.bill.data.SSEquipmentInfo;
 import forge.bill.mode.ModeGarage;
 import forge.bill.platform.SystemConfig;
 import java.util.logging.Level;
 import nahon.comm.event.EventCenter;
 import nahon.comm.faultsystem.LogCenter;
+import nahon.comm.io.IOInfo;
 
 /**
  *
@@ -20,7 +19,7 @@ import nahon.comm.faultsystem.LogCenter;
 public class DevConnect {
 
     private final ModeGarage instance;
-    private SIOInfo lastioinfo;
+    private IOInfo lastioinfo;
     private byte lastbyte = -1;
 
     public enum ACTION {
@@ -54,30 +53,30 @@ public class DevConnect {
         }
 
         //保存最后配置
-        this.lastioinfo = new SIOInfo(iotype, pars);
+        this.lastioinfo = new IOInfo(iotype, pars);
 
         //搜索设备
         this.SearchDevice(lastioinfo, addr);
     }
 
-    public void SearchDevice(SIOInfo ioinfo, byte devaddr) {
+    public void SearchDevice(IOInfo ioinfo, byte devaddr) {
         try {
             this.instance.GetManager().SearchDevice(ioinfo, devaddr);
 
             //更新连接信息
-            if (this.lastioinfo == null || !this.lastioinfo.CompareTo(ioinfo)) {
+            if (this.lastioinfo == null || !this.lastioinfo.equalto(ioinfo)) {
                 //保存IO类型
                 SystemConfig.GetInstance().SetValue(
                         SystemConfig.IOType, ioinfo.iotype);
 
                 //保存IO类型
                 SystemConfig.GetInstance().SetValue(
-                        SystemConfig.ParLen, String.valueOf(ioinfo.pars.length));
+                        SystemConfig.ParLen, String.valueOf(ioinfo.par.length));
 
                 //保存IO参数
-                for (int i = 0; i < ioinfo.pars.length; i++) {
+                for (int i = 0; i < ioinfo.par.length; i++) {
                     SystemConfig.GetInstance().SetValue(
-                            SystemConfig.Par[i], ioinfo.pars[i]);
+                            SystemConfig.Par[i], ioinfo.par[i]);
                 }
 
                 //保存配置文件

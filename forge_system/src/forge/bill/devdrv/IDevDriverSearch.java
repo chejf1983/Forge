@@ -5,12 +5,13 @@
  */
 package forge.bill.devdrv;
 
-import forge.bill.data.SIOInfo;
+import nahon.comm.io.IOInfo;
+
 
 /**
  *
  * @author chejf
  */
 public interface IDevDriverSearch {
-    IDevDriver SearchDevDriver(SIOInfo ioinfo, byte dst_addr) throws Exception;
+    IDevDriver SearchDevDriver(IOInfo ioinfo, byte dst_addr) throws Exception;
 }

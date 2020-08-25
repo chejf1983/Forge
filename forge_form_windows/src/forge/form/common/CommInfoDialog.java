@@ -6,7 +6,6 @@ package forge.form.common;
 
 import USBDriver.USBLib;
 import comm.win.io.WindowsIOFactory;
-import forge.bill.data.SIOInfo;
 import gnu.io.CommPortIdentifier;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -14,6 +13,7 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import nahon.comm.io.IOInfo;
 
 /**
  *
@@ -224,7 +224,7 @@ public class CommInfoDialog extends javax.swing.JDialog {
                     String comname = this.CommNameInput.getSelectedItem().toString();
                     int baundrate = Integer.valueOf(this.BaundRateInput.getSelectedItem().toString());
 
-                    this.par = new SIOInfo(WindowsIOFactory.IOTYPE.COM.toString(), comname, String.valueOf(baundrate));
+                    this.par = new IOInfo(WindowsIOFactory.IOTYPE.COM.toString(), comname, String.valueOf(baundrate));
 
                     break;
 
@@ -232,7 +232,7 @@ public class CommInfoDialog extends javax.swing.JDialog {
 
                     String usbdev = this.USBNameInput.getSelectedItem().toString();
 
-                    this.par = new SIOInfo(WindowsIOFactory.IOTYPE.USB.toString(), usbdev);
+                    this.par = new IOInfo(WindowsIOFactory.IOTYPE.USB.toString(), usbdev);
 
                     break;
 
@@ -241,7 +241,7 @@ public class CommInfoDialog extends javax.swing.JDialog {
                     String ipaddr = this.Ipaddr.getText();
                     int portnum = Integer.valueOf(this.portNum.getText());
 
-                    this.par = new SIOInfo(WindowsIOFactory.IOTYPE.TCP.toString(), ipaddr, String.valueOf(portnum));
+                    this.par = new IOInfo(WindowsIOFactory.IOTYPE.TCP.toString(), ipaddr, String.valueOf(portnum));
                     break;
                 default:
                     break;
@@ -257,10 +257,10 @@ public class CommInfoDialog extends javax.swing.JDialog {
 
     }//GEN-LAST:event_OKActionPerformed
 
-    private SIOInfo par = null;
+    private IOInfo par = null;
     private int devaddr = 0;
 
-    public SIOInfo GetIOInfo() {
+    public IOInfo GetIOInfo() {
         return this.par;
     }
 
