@@ -12,6 +12,10 @@ import forge.form.common.EiaTableModel;
 import forge.bill.platform.ForgeSystem;
 import forge.bill.platform.SystemConfig;
 import forge.form.common.InitPaneHelper;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
@@ -22,6 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
@@ -73,26 +80,23 @@ public class EIASetupPane extends javax.swing.JPanel {
 
         //设置设备名称可以修改
         devnamelist.setEditable(true);
-        devnamelist.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                //如果设备名称改变了
-                if (!devnamelist.getEditor().getItem().toString().contentEquals(lastdevname)) {
-                    //重新选择设备名称后,更新设备表格中设备名称
-                    SSEquipmentInfo eia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
-                    //更新设备名称
-                    eia.DeviceName = devnamelist.getSelectedItem().toString();
-                    lastdevname = eia.DeviceName;
-                    //更新创建日期
-                    eia.BuildDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                    //创建序列号
-                    String newerianum = EiaBuilder.GetInstance().BuildSerialID(lastdevname);
-                    if (newerianum != null) {
-                        eia.BuildSerialNum = newerianum;
-                    }
-                    //更新界面
-                    devEiaTable.setModel(new EiaTableModel(eia));
+        devnamelist.addItemListener((ItemEvent e) -> {
+            //如果设备名称改变了
+            if (!devnamelist.getEditor().getItem().toString().contentEquals(lastdevname)) {
+                //重新选择设备名称后,更新设备表格中设备名称
+                SSEquipmentInfo eia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
+                //更新设备名称
+                eia.DeviceName = devnamelist.getSelectedItem().toString();
+                lastdevname = eia.DeviceName;
+                //更新创建日期
+                eia.BuildDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                //创建序列号
+                String newerianum = EiaBuilder.GetInstance().BuildSerialID(lastdevname);
+                if (newerianum != null) {
+                    eia.BuildSerialNum = newerianum;
                 }
+                //更新界面
+                UpdateEia(eia);
             }
         });
 
@@ -105,12 +109,32 @@ public class EIASetupPane extends javax.swing.JPanel {
                 } else {
                     return super.getCellEditor(row, column);
                 }
+
             }
         };
 //        this.devEiaTable.setTableHeader(null);
 //        Table_data.getTableHeader().setResizingAllowed(false);   // 不允许拉伸
         this.devEiaTable.getTableHeader().setReorderingAllowed(false); //不允许拖拽
         this.eiaTablePane.setViewportView(devEiaTable);
+
+        this.createPopupMenu();
+        this.devEiaTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                //判断是否为鼠标的BUTTON3按钮，BUTTON3为鼠标右键
+                if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
+                    //通过点击位置找到点击为表格中的行
+                    int focusedRowIndex = devEiaTable.rowAtPoint(evt.getPoint());
+                    if (focusedRowIndex == 1) {
+                        //将表格所选项设为当前右键点击的行
+                        devEiaTable.setRowSelectionInterval(focusedRowIndex, focusedRowIndex);
+                        //弹出菜单
+                        m_popupMenu.show(devEiaTable, evt.getX(), evt.getY());
+                    }
+                }
+
+            }
+        });
     }
 
     //初始化外部版本
@@ -133,13 +157,13 @@ public class EIASetupPane extends javax.swing.JPanel {
             @Override
             public void recevieEvent(Event<ACTION> event) {
                 SwingUtilities.invokeLater(() -> {
-//                    if (event.GetEvent() == ACTION.CONNECT) {
-//                        SSEquipmentInfo eia = configer.GetDevInfo();
-//                        UpdateEia(eia);
-//                        lastdevname = eia.DeviceName;
-//                    } else {
-                    UpdateEia(null);
-//                    }
+                    if (event.GetEvent() == ACTION.CONNECT) {
+                        SSEquipmentInfo eia = configer.GetDevInfo();
+                        UpdateEia(eia);
+                        lastdevname = eia.DeviceName;
+                    } else {
+                        UpdateEia(null);
+                    }
                 });
             }
         });
@@ -308,6 +332,32 @@ public class EIASetupPane extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    JPopupMenu m_popupMenu;
+
+    private void createPopupMenu() {
+        m_popupMenu = new JPopupMenu();
+
+        JMenuItem delMenItem = new JMenuItem();
+        delMenItem.setText("粘贴");
+        delMenItem.addActionListener((java.awt.event.ActionEvent evt) -> {
+            //该操作需要做的事
+            Clipboard clipboard = getToolkit().getSystemClipboard();
+            Transferable contents = clipboard.getContents(this);
+            DataFlavor flavor = DataFlavor.stringFlavor;
+            if (contents.isDataFlavorSupported(flavor)) {
+                try {
+                    String str = (String) contents.getTransferData(flavor);
+                    SSEquipmentInfo tmpeia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
+                    tmpeia.BuildSerialNum = str;
+                    UpdateEia(tmpeia);
+                } catch (UnsupportedFlavorException | IOException ex) {
+                    Logger.getLogger(EIASetupPane.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        m_popupMenu.add(delMenItem);
+    }
+
     //下发eia，并且记录出场信息
     private void Button_SetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_SetActionPerformed
         //获取新的eia信息
@@ -316,6 +366,12 @@ public class EIASetupPane extends javax.swing.JPanel {
         }
         //连接状态下才可以下发设备信息和设备地址
         SSEquipmentInfo eia = ((EiaTableModel) this.devEiaTable.getModel()).GetEIAInfo();
+        if (eia.BuildSerialNum.length() < 16) {
+            if (JOptionPane.OK_OPTION != JOptionPane.showConfirmDialog(this, "序列号长度不足16,是否需要下发?", "", JOptionPane.YES_NO_OPTION)) {
+                return;
+            }
+        }
+
         if (configer.SetDevEia(eia, TextField_company.getText())) {
             //自动增加数字
             if (CheckBox_AddNum.isSelected()) {
@@ -323,7 +379,7 @@ public class EIASetupPane extends javax.swing.JPanel {
                     SSEquipmentInfo tmpeia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
                     String slast3 = tmpeia.BuildSerialNum.substring(tmpeia.BuildSerialNum.length() - 3);
                     int ilast3 = Integer.valueOf(slast3);
-                    ilast3 = (ilast3+1) % 1000;
+                    ilast3 = (ilast3 + 1) % 1000;
                     tmpeia.BuildSerialNum = tmpeia.BuildSerialNum.substring(0, tmpeia.BuildSerialNum.length() - 3)
                             + String.format("%03d", ilast3);
                     UpdateEia(tmpeia);
@@ -364,6 +420,10 @@ public class EIASetupPane extends javax.swing.JPanel {
             configer.SetRecordPath(dirpath);
         }
     }//GEN-LAST:event_Button_SetDirActionPerformed
+
+    public void ReadEIA() {
+        Button_readActionPerformed(null);
+    }
 
     private void Button_readActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Button_readActionPerformed
         SSEquipmentInfo eia = configer.GetDevInfo();

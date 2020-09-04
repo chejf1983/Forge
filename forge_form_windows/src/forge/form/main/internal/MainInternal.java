@@ -45,6 +45,7 @@ public class MainInternal extends javax.swing.JFrame {
     }
 
     private final CardLayout workScreenLayout = new CardLayout();
+    private EIASetupPane eia_setup;
 
     private void InitSystem() throws Exception {
 
@@ -54,7 +55,9 @@ public class MainInternal extends javax.swing.JFrame {
         this.MainAera.setLayout(workScreenLayout);
         this.MainAera.add(BinfileMakeForm.class.getName(), new BinfileMakeForm(this));
         this.MainAera.add(UpdateForm.class.getName(), new UpdateForm(this));
-        this.MainAera.add(EIASetupPane.class.getName(), new EIASetupPane(this));
+        
+        eia_setup = new EIASetupPane(this);
+        this.MainAera.add(EIASetupPane.class.getName(), eia_setup);
         this.MainAera.add(DebugPane.class.getName(), new DebugPane());
         this.MainAera.add(InternalAbout.class.getName(), new InternalAbout());
         workScreenLayout.show(this.MainAera, InternalAbout.class.getName());
