@@ -268,7 +268,7 @@ public class CommInfoDialog extends javax.swing.JDialog {
         return (byte) this.devaddr;
     }
 
-    private int[] Baundrates = new int[]{9600, 115200};
+    private int[] Baundrates = new int[]{4800, 9600, 19200, 38400, 57600, 115200};
 
     private void InitUSBParameter() {
         try {
