@@ -125,10 +125,12 @@ public class EIASetupPane extends javax.swing.JPanel {
                 if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
                     //通过点击位置找到点击为表格中的行
                     int focusedRowIndex = devEiaTable.rowAtPoint(evt.getPoint());
-                    if (focusedRowIndex == 1) {
+                    if (focusedRowIndex < 3) {
+                        index = focusedRowIndex;
                         //将表格所选项设为当前右键点击的行
                         devEiaTable.setRowSelectionInterval(focusedRowIndex, focusedRowIndex);
                         //弹出菜单
+
                         m_popupMenu.show(devEiaTable, evt.getX(), evt.getY());
                     }
                 }
@@ -333,6 +335,7 @@ public class EIASetupPane extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     JPopupMenu m_popupMenu;
+    private int index = 0;
 
     private void createPopupMenu() {
         m_popupMenu = new JPopupMenu();
@@ -348,7 +351,17 @@ public class EIASetupPane extends javax.swing.JPanel {
                 try {
                     String str = (String) contents.getTransferData(flavor);
                     SSEquipmentInfo tmpeia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
-                    tmpeia.BuildSerialNum = str;
+                    switch (index) {
+                        case 0:
+                            tmpeia.DeviceName = str;
+                            break;
+                        case 1:
+                            tmpeia.BuildSerialNum = str;
+                            break;
+                        case 2:
+                            tmpeia.BuildDate = str;
+                            break;
+                    }
                     UpdateEia(tmpeia);
                 } catch (UnsupportedFlavorException | IOException ex) {
                     Logger.getLogger(EIASetupPane.class.getName()).log(Level.SEVERE, null, ex);
