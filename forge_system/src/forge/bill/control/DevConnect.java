@@ -95,7 +95,7 @@ public class DevConnect {
                 SystemConfig.GetInstance().SaveToFile();
             }
 
-            this.ActionCenter.CreateEvent(ACTION.CONNECT);
+            this.ActionCenter.CreateEvent(this.instance.GetManager().IsFindDev() ? ACTION.CONNECT : ACTION.DISCONNECT);
         } catch (Exception ex) {
             LogCenter.Instance().SendFaultReport(Level.WARNING, "搜索失败 ", ex);
         }

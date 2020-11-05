@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
+import nahon.comm.io.IOInfo;
 
 /**
  *
@@ -62,12 +63,12 @@ public class MainCustomer extends javax.swing.JFrame {
             public void recevieEvent(Event<ACTION> event) {
                 SwingUtilities.invokeLater(() -> {
                     if (ACTION.CONNECT == event.GetEvent()) {
-                        ConnectStateIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/forge/form/resource/connect_1.png")));
+//                        ConnectStateIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/forge/form/resource/connect_1.png")));
                         workScreenLayout.show(MainArea, EIASetupPane.class.getName());
                     }
 
                     if (ACTION.DISCONNECT == event.GetEvent()) {
-                        ConnectStateIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/forge/form/resource/disconnect_1.png")));
+//                        ConnectStateIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/forge/form/resource/disconnect_1.png")));
                         workScreenLayout.show(MainArea, CustomerAbout.class.getName());
                     }
                 });
@@ -87,7 +88,6 @@ public class MainCustomer extends javax.swing.JFrame {
         MainArea = new javax.swing.JPanel();
         logPane1 = new forge.form.common.LogPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        ConnectStateIcon = new javax.swing.JMenu();
         FileMenu = new javax.swing.JMenu();
         ExitMenuItem = new javax.swing.JMenuItem();
         MenuItem_Open = new javax.swing.JMenuItem();
@@ -116,9 +116,6 @@ public class MainCustomer extends javax.swing.JFrame {
             MainAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 266, Short.MAX_VALUE)
         );
-
-        ConnectStateIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/forge/form/resource/disconnect_1.png"))); // NOI18N
-        jMenuBar1.add(ConnectStateIcon);
 
         FileMenu.setText("设备");
 
@@ -204,6 +201,12 @@ public class MainCustomer extends javax.swing.JFrame {
         dilog.setVisible(true);
         if (dilog.GetIOInfo() != null) {
             ForgeSystem.GetInstance().GetControlCenter().GetConnector().SearchDevice(dilog.GetIOInfo(), dilog.GetAddr());
+            String title = "Forge:";
+            for (String par : dilog.GetIOInfo().par) {
+                title += " " + par;
+            }
+
+            this.setTitle(title);
         }
     }//GEN-LAST:event_MenuItem_OpenActionPerformed
 
@@ -244,7 +247,6 @@ public class MainCustomer extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu ConnectStateIcon;
     private javax.swing.JMenuItem ExitMenuItem;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JMenu HelpMenu;

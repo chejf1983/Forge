@@ -147,10 +147,12 @@ public class EIASetupPane extends javax.swing.JPanel {
 
     private void UpdateEia(SSEquipmentInfo model) {
         this.devEiaTable.setModel(new EiaTableModel(model));
-        JTableHeader header = devEiaTable.getTableHeader();
-        TableColumn column = devEiaTable.getColumnModel().getColumn(0);
-        header.setResizingColumn(column); // 名称
-        column.setWidth(90);
+//        JTableHeader header = devEiaTable.getTableHeader();
+//        if (model != null) {
+//            TableColumn column = devEiaTable.getColumnModel().getColumn(0);
+//            header.setResizingColumn(column); // 名称
+//            column.setWidth(90);
+//        }
     }
 
     //更新EIA信息

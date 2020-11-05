@@ -65,6 +65,10 @@ public class DevManager {
         return this.applylock.isLocked();
     }
 
+    public boolean IsFindDev(){
+        return this.current_dev != null;
+    }
+    
     //申请设备
     public Device ApplyDevice() throws Exception {
         if (this.IsDeviceApplied()) {
