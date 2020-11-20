@@ -4,7 +4,6 @@ import forge.bill.data.SSEquipmentInfo;
 import forge.bill.devdrv.Device;
 import forge.bill.mode.ModeGarage;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import nahon.comm.faultsystem.LogCenter;
 
 /*
