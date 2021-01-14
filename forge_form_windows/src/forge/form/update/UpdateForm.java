@@ -185,7 +185,12 @@ public class UpdateForm extends javax.swing.JPanel {
     }//GEN-LAST:event_OpenFileActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        ForgeSystem.GetInstance().GetControlCenter().GetUpdateBean().UpdateFile(new File(this.FileBinPath.getText()));
+        File file = new File(this.FileBinPath.getText());
+        if (file.exists()) {
+            ForgeSystem.GetInstance().GetControlCenter().GetUpdateBean().UpdateFile(file);
+        }else{
+            JOptionPane.showMessageDialog(null, "没有找到升级文件");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
