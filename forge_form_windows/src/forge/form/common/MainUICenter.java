@@ -11,6 +11,7 @@ import forge.bill.platform.SystemConfig;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
 import nahon.comm.event.Event;
 import nahon.comm.faultsystem.LogCenter;
 import nq.dev.drv.NqDevDriverSearch;
@@ -41,10 +42,14 @@ public class MainUICenter {
         LogCenter.Instance().RegisterFaultEvent(new nahon.comm.event.EventListener<Level>() {
             @Override
             public void recevieEvent(Event<Level> event) {
-                JOptionPane.showMessageDialog(null, event.Info().toString(), "错误信息", ERROR_MESSAGE);
+                if (event.GetEvent() == Level.INFO) {
+                    JOptionPane.showMessageDialog(null, event.Info().toString(), "提示", INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, event.Info().toString(), "错误信息", ERROR_MESSAGE);
+                }
             }
         });
-        
+
         DevManager.SetDrvierBin(new NqDevDriverSearch());
     }
 }
