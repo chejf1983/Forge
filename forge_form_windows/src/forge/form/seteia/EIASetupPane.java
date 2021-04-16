@@ -17,7 +17,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -31,9 +31,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
 import nahon.comm.faultsystem.LogCenter;
@@ -121,6 +119,7 @@ public class EIASetupPane extends javax.swing.JPanel {
         this.devEiaTable.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
+                super.mouseClicked(evt);
                 //判断是否为鼠标的BUTTON3按钮，BUTTON3为鼠标右键
                 if (evt.getButton() == java.awt.event.MouseEvent.BUTTON3) {
                     //通过点击位置找到点击为表格中的行
@@ -130,11 +129,16 @@ public class EIASetupPane extends javax.swing.JPanel {
                         //将表格所选项设为当前右键点击的行
                         devEiaTable.setRowSelectionInterval(focusedRowIndex, focusedRowIndex);
                         //弹出菜单
-
                         m_popupMenu.show(devEiaTable, evt.getX(), evt.getY());
                     }
+                    if (focusedRowIndex == 2) {
+                        SSEquipmentInfo eia = ((EiaTableModel) devEiaTable.getModel()).GetEIAInfo();
+                        //更新创建日期
+                        eia.BuildDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                        //更新界面
+                        UpdateEia(eia);
+                    }
                 }
-
             }
         });
     }
