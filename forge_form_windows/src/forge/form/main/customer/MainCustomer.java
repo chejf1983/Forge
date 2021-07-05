@@ -18,7 +18,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
-import nahon.comm.io.IOInfo;
 
 /**
  *
